@@ -93,10 +93,11 @@ services:
     restart: unless-stopped
     group_add:
       - ${DOCKER_SOCK_GROUP_ID}
+    user: root
 
-  django-code-server-auth-app:
-    image: lscr.io/linuxserver/code-server:latest
-    container_name: django-code-server-auth-app
+  django-code-server:
+    image: maxuli/django-code-server:latest
+    container_name: django-code-server
     environment:
       - PUID=1000
       - PGID=1000
@@ -114,6 +115,7 @@ services:
     ports:
       - 9020:8443
     restart: unless-stopped
+    user: root
 
   postgres:
     image: postgres:latest

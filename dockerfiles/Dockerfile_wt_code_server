@@ -33,11 +33,9 @@ RUN if ! getent group docker; then \
        GID=$(awk -F: '{if ($3 >= 1000 && $3 < 65534) print $3}' /etc/group | sort -n | tail -1); \
        groupadd -g $((GID+1)) docker; \
     fi
-RUN usermod -aG docker abc
+RUN usermod -aG docker root
 
 RUN touch /var/run/docker.sock && chown root:docker /var/run/docker.sock
 
 RUN git config --global user.email "croitoriu.alexandru.code@gmail.com"
 RUN git config --global user.name "Alexandru Dan Croitoriu"
-
-# USER abc

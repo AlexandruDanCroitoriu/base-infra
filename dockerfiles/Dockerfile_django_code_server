@@ -1,0 +1,10 @@
+FROM lscr.io/linuxserver/code-server:latest
+
+USER root
+
+RUN apt-get update
+RUN apt-get install python3 -y
+RUN apt-get install python3.12-venv -y
+
+RUN git config --global user.email "croitoriu.alexandru.code@gmail.com"
+RUN git config --global user.name "Alexandru Dan Croitoriu"

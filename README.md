@@ -14,7 +14,8 @@ docker push maxuli/wt-builder:latest
 docker image tag jenkins-docker maxuli/jenkins-docker:latest
 docker push maxuli/jenkins-docker:latest
 
-
+docker image tag django-code-server maxuli/django-code-server:latest
+docker push maxuli/django-code-server:latest
 
 
 git config --global user.email "partyentertainers93@gmail.com"
