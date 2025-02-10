@@ -13,3 +13,9 @@ docker push maxuli/wt-builder:latest
 
 docker image tag jenkins-docker maxuli/jenkins-docker:latest
 docker push maxuli/jenkins-docker:latest
+
+
+
+
+git config --global user.email "partyentertainers93@gmail.com"
+git config --global user.name "Alexandru Dan Croitoriu"
