@@ -7,7 +7,7 @@ services:
     restart: unless-stopped
     container_name: caddy
     ports:
-      - 80:80
+      - 9000:80
       - 443:443
       - 2019:2019
     volumes:
@@ -27,7 +27,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./containers/portainer/portainer-data:/data
     ports:
-      - 9000:9000
+      - 9001:9000
 
   gitea:
     image: docker.io/gitea/gitea:1.23.1
@@ -41,7 +41,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
-      - "9001:3000"
+      - "9002:3000"
       - "222:22"
 
   jenkins:
@@ -50,13 +50,26 @@ services:
     container_name: jenkins
     restart: unless-stopped
     ports:
-      - 9002:8080
+      - 9003:8080
       - 50000:50000
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./containers/jenkins/jenkins_home:/var/jenkins_home
     group_add:
       - ${DOCKER_SOCK_GROUP_ID}
+  
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: croitoriu.alexandru.code@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: asdfghj1
+    volumes:
+      - ./containers/pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "9004:80"
+    depends_on:
+      - postgres
 
   wt-code-server:
     image: wt-code-server
@@ -73,13 +86,35 @@ services:
       - DEFAULT_WORKSPACE=/config/workspace #optional
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./containers/code-server:/config
+      - ./containers/wt-code-server:/config/
+      - ./projects/wt:/config/workspace
     ports:
       - 9010:8443
     restart: unless-stopped
     group_add:
       - ${DOCKER_SOCK_GROUP_ID}
-    
+
+  django-code-server-auth-app:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: django-code-server-auth-app
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD=asdfghj1 #optional
+      # - HASHED_PASSWORD= #optional
+      - SUDO_PASSWORD=asdfghj1 #optional
+      # - SUDO_PASSWORD_HASH= #optional
+      # - PROXY_DOMAIN=code-server.my.domain #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      # - /var/run/docker.sock:/var/run/docker.sock
+      - ./containers/django-code-server:/config
+      - ./projects/django:/config/workspace
+    ports:
+      - 9020:8443
+    restart: unless-stopped
+
   postgres:
     image: postgres:latest
     restart: always
@@ -92,30 +127,7 @@ services:
       - ./containers/postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  #   # deploy:
-  #   #   resources:
-  #   #     limits:
-  #   #       cpus: '1.0'
-  #   #       memory: 1G
-  #   #     reservations:
-  #   #       cpus: '0.5'
-  #   #       memory: 512M
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U postgres"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  pgadmin:
-    container_name: pgadmin
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: croitoriu.alexandru.code@gmail.com
-      PGADMIN_DEFAULT_PASSWORD: asdfghj1
-    volumes:
-      - ./containers/pgadmin-data:/var/lib/pgadmin
-    ports:
-      - "9003:80"
-    depends_on:
-      - postgres
+
+ 
 
 
