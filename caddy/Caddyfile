@@ -1,0 +1,15 @@
+:80 {
+    root * /srv
+    file_server 
+ 
+    # handle_path /portainer/* {
+    #     reverse_proxy portainer:9000
+    # }
+    # handle_path /wt-code-server/* {
+    #     reverse_proxy wt-code-server:8443
+    # }
+    # handle_path /jenkins/* {
+    #     reverse_proxy jenkins:9001
+    # }
+}
+
